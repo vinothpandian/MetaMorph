@@ -4,13 +4,15 @@ from typing import List
 
 import cv2
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
 
+from src.models import PredictionResponse
 from src.predictor import detect_elements
-from src.utils import store_sketch
+from src.utils import postprocess, preprocess, store_sketch
 
 warnings.filterwarnings("ignore", message=r"Passing", category=FutureWarning)
+
 
 app = FastAPI(
     title="MetaMorph API",
@@ -23,27 +25,24 @@ app = FastAPI(
 
 os.makedirs("./sketches", exist_ok=True)
 
+origins = [
+    "https://metamorph.designwitheve.com",
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/", include_in_schema=False)
 async def redirect_to_home():
-    return RedirectResponse("https://metamorph.designwitheve.com")
-
-
-class PositionSchema(BaseModel):
-    x: int
-    y: int
-
-
-class DimensionSchema(BaseModel):
-    width: int
-    height: int
-
-
-class PredictionResponse(BaseModel):
-    name: str
-    position: PositionSchema
-    dimension: DimensionSchema
-    probability: float
+    return RedirectResponse("/docs")
 
 
 @app.post(
@@ -57,10 +56,10 @@ class PredictionResponse(BaseModel):
         " contains predicted bounding box position (top left x,y coordinates) and its dimensions"
         " (width, height)"
     ),
-    tags=["Prediction"],
+    tags=["Predict UI Elements"],
     description="Detect UI elements from low fidelity sketch",
 )
-async def predict(
+async def predict_user_interface_elements(
     image: UploadFile = File(
         ...,
         description=(
@@ -80,13 +79,21 @@ async def predict(
 
     if mime_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Image is not a JPG or PNG"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Image is not a JPG or PNG. Uploaded file is {mime_type}",
         )
 
     image_path = store_sketch(image)
 
     img = cv2.imread(image_path)
 
-    response: List[PredictionResponse] = detect_elements(image=img, min_prob=minimum_probability)
+    preprocessed_image, top, left, ratio = preprocess(image=img)
 
+    result: List[PredictionResponse] = detect_elements(
+        image=preprocessed_image, min_prob=minimum_probability
+    )
+
+    response: List[PredictionResponse] = postprocess(result, top, left, ratio)
+
+    print(response)
     return response

@@ -1,7 +1,6 @@
 import json
 import os
 
-import cv2
 import numpy as np
 import tensorflow as tf
 
@@ -111,15 +110,11 @@ def detect_elements(image: np.ndarray, min_prob: float):
 
     height, width, _ = image.shape
 
-    grayscaled_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, thresh = cv2.threshold(grayscaled_image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
-    image_np = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
-
     # # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
     # image_np_expanded = np.expand_dims(image_np, axis=0)
 
     # Actual detection.
-    output_dict = run_inference_for_single_image(image_np, DETECTION_GRAPH)
+    output_dict = run_inference_for_single_image(image, DETECTION_GRAPH)
 
     result = []
 

@@ -1,8 +1,63 @@
 import shutil
+from typing import List
 from uuid import uuid1
 
+import cv2
+import numpy as np
 import tensorflow as tf
 from fastapi import UploadFile
+
+from src.models import PredictionResponse
+
+
+def preprocess(image: np.ndarray):
+    grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    _, thresh_binary_image = cv2.threshold(grayscale_image, 220, 255, cv2.THRESH_BINARY)
+    image = cv2.bitwise_not(thresh_binary_image)
+
+    desired_size = 640
+    old_size = image.shape[:2]
+
+    ratio = float(desired_size) / max(old_size)
+    new_size = tuple([int(x * ratio) for x in old_size])
+
+    im = cv2.resize(image, (new_size[1], new_size[0]))
+
+    delta_w = desired_size - new_size[1]
+    delta_h = desired_size - new_size[0]
+    top, bottom = delta_h // 2, delta_h - (delta_h // 2)
+    left, right = delta_w // 2, delta_w - (delta_w // 2)
+
+    color = [0, 0, 0]
+    new_im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
+
+    image_np = cv2.cvtColor(new_im, cv2.COLOR_GRAY2BGR)
+
+    return image_np, top, left, ratio
+
+
+def postprocess(result: List[PredictionResponse], top: int, left: int, ratio: float):
+
+    for annotation in result:
+        xmin = annotation["position"]["y"] - left
+        ymin = annotation["position"]["x"] - top
+        w = annotation["dimension"]["height"]
+        h = annotation["dimension"]["width"]
+
+        xmax = xmin + w
+        ymax = ymin + h
+
+        xmin = int(xmin / ratio)
+        ymin = int(ymin / ratio)
+        xmax = int(xmax / ratio)
+        ymax = int(ymax / ratio)
+
+        annotation["position"]["x"] = xmin
+        annotation["position"]["y"] = ymin
+        annotation["dimension"]["width"] = xmax - xmin
+        annotation["dimension"]["height"] = ymax - ymin
+
+    return result
 
 
 def store_sketch(image: UploadFile):
