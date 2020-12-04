@@ -133,6 +133,9 @@ If you use MetaMorph, please use the following citation:
 	publisher    = {Association for Computing Machinery},
 	address      = {New York, NY, USA},
 	series       = {OZCHI'20},
+	doi          = {10.1145/3441000.3441030},
+	isbn         = {978-1-4503-8975-4/20/12},
+	url          = {https://doi.org/10.1145/3441000.3441030},
 	numpages     = 10,
 	keywords     = {UI Element Dataset, Neural Networks, Deep Learning, Sketch Detection, Sketch Recognition, Artificial Intelligence, Prototyping}
 }
