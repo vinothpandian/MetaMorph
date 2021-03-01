@@ -8,5 +8,5 @@ export default {
     exports: "default",
   },
   plugins: [image()],
-  external: ["scenegraph", "viewport"],
+  external: ["scenegraph", "uxp"],
 };

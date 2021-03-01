@@ -1,13 +1,13 @@
 {
-  "name" : "Akin UI wireframe generator",
-  "description": "Akin is a UI wireframe generator that allows designers to chose a UI design pattern and provides them with multiple UI wireframes for a given UI design pattern",
+  "name" : "MetaMorph UI element detector",
+  "description": "MetaMorph is an AI tool to detect the constituent UI elements of low fidelity prototype sketches.",
   "languages": ["en"],
   "author": "Vinoth Pandian",
   "host" : {
     "app" : "XD",
     "minVersion" : "21.0"
   },
-  "id" : "fde42ad8",
+  "id" : "539a3a18",
   "icons" : [ {
     "path" : "images/icon@1x.png",
     "width" : 24,
@@ -19,24 +19,8 @@
   } ],
   "uiEntryPoints" : [ {
     "type" : "menu",
-    "label": "Generate login screen",
-    "commandId" : "generateLoginScreen"
-  },{
-    "type" : "menu",
-    "label": "Generate account creation screen",
-    "commandId" : "generateAccountCreationScreen"
-  },{
-    "type" : "menu",
-    "label": "Generate product listing screen",
-    "commandId" : "generateProductListing"
-  },{
-    "type" : "menu",
-    "label": "Generate product description screen",
-    "commandId" : "generateProductDescription"
-  },{
-    "type" : "menu",
-    "label": "Generate splash screen",
-    "commandId" : "generateSplashScreen"
+    "label": "Upload low fidelity sketch for conversion",
+    "commandId" : "detectUIElements"
   }],
   "version" : "0.0.1"
 }

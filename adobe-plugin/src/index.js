@@ -7,18 +7,6 @@ const { error } = require("./lib/dialogs");
 
 const fs = storage.localFileSystem;
 
-const getHeightAndWidthFromDataUrl = (dataURL) =>
-  new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      resolve({
-        height: img.height,
-        width: img.width,
-      });
-    };
-    img.src = dataURL;
-  });
-
 const generateScreen = async () => {
   try {
     const lofiSketch = await fs.getFileForOpening({
@@ -38,15 +26,15 @@ const generateScreen = async () => {
       throw new Error(`Server overloaded`);
     }
 
-    const fileAsDataURL = window.URL.createObjectURL(lofiSketch);
+    const uiScreen = await response.json();
 
-    const { width, height } = getHeightAndWidthFromDataUrl(fileAsDataURL);
+    console.log(uiScreen);
+    const width = 360;
+    const height = 640;
 
-    const uiScreens = await response.json();
+    console.log(width, height);
 
-    uiScreens.forEach((uiScreen, i) => {
-      generateArtboard(width, height, uiScreen);
-    });
+    generateArtboard(width, height, uiScreen);
   } catch (err) {
     await error("Server failed", `Sorry! ${error.message}`);
   }
