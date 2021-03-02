@@ -94,11 +94,11 @@ function addElement(image, element, artboard) {
   rectNode.moveInParentCoordinates(x, y);
 }
 
-function generateArtboard(width, height, uiScreen) {
+function generateArtboard(id, width, height, uiScreen) {
   const [x, y] = DOCUMENT_CENTER;
 
   const artboard = new scenegraph.Artboard();
-  artboard.name = `detected_wireframe`;
+  artboard.name = `wireframe_${id}`;
   artboard.width = width;
   artboard.height = height;
   artboard.fill = new scenegraph.Color("#F2F2F2");
@@ -107,7 +107,7 @@ function generateArtboard(width, height, uiScreen) {
   scenegraph.root.addChild(artboard);
   artboard.moveInParentCoordinates(x, y);
 
-  uiScreen.forEach((element) => {
+  uiScreen.objects.forEach((element) => {
     const { name } = element;
 
     const image = UI_ELEMENTS[name];
@@ -142,13 +142,9 @@ const generateScreen = async () => {
 
     const uiScreen = await response.json();
 
-    console.log(uiScreen);
-    const width = 360;
-    const height = 640;
+    const { id, width, height } = uiScreen;
 
-    console.log(width, height);
-
-    generateArtboard(width, height, uiScreen);
+    generateArtboard(id, width, height, uiScreen);
   } catch (err) {
     await error("Server failed", `Sorry! ${error.message}`);
   }

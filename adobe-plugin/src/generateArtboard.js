@@ -22,11 +22,11 @@ export function addElement(image, element, artboard) {
   rectNode.moveInParentCoordinates(x, y);
 }
 
-export function generateArtboard(width, height, uiScreen) {
+export function generateArtboard(id, width, height, uiScreen) {
   const [x, y] = DOCUMENT_CENTER;
 
   const artboard = new Artboard();
-  artboard.name = `detected_wireframe`;
+  artboard.name = `wireframe_${id}`;
   artboard.width = width;
   artboard.height = height;
   artboard.fill = new Color("#F2F2F2");
@@ -35,7 +35,7 @@ export function generateArtboard(width, height, uiScreen) {
   root.addChild(artboard);
   artboard.moveInParentCoordinates(x, y);
 
-  uiScreen.forEach((element) => {
+  uiScreen.objects.forEach((element) => {
     const { name } = element;
 
     const image = UI_ELEMENTS[name];

@@ -28,13 +28,9 @@ const generateScreen = async () => {
 
     const uiScreen = await response.json();
 
-    console.log(uiScreen);
-    const width = 360;
-    const height = 640;
+    const { id, width, height } = uiScreen;
 
-    console.log(width, height);
-
-    generateArtboard(width, height, uiScreen);
+    generateArtboard(id, width, height, uiScreen);
   } catch (err) {
     await error("Server failed", `Sorry! ${error.message}`);
   }
