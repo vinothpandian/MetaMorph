@@ -7,7 +7,7 @@ from fastapi import FastAPI, File, HTTPException, Query, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from src.models import PredictionResponse
+from src.models import ObjectsSchema, ResponseSchema
 from src.predictor import detect_elements
 from src.utils import postprocess, preprocess, store_sketch
 
@@ -47,7 +47,7 @@ async def redirect_to_home():
 
 @app.post(
     "/predict/",
-    response_model=List[PredictionResponse],
+    response_model=ResponseSchema,
     status_code=status.HTTP_200_OK,
     response_description=(
         "Responds with a list of UI element categories present in the input low fidelity sketch"
@@ -83,17 +83,21 @@ async def predict_user_interface_elements(
             detail=f"Image is not a JPG or PNG. Uploaded file is {mime_type}",
         )
 
-    image_path = store_sketch(image)
+    id_, image_path = store_sketch(image)
 
     img = cv2.imread(image_path)
 
+    height, width, _ = img.shape
+
     preprocessed_image, top, left, ratio = preprocess(image=img)
 
-    result: List[PredictionResponse] = detect_elements(
+    result: List[ObjectsSchema] = detect_elements(
         image=preprocessed_image, min_prob=minimum_probability
     )
 
-    response: List[PredictionResponse] = postprocess(result, top, left, ratio)
+    objects: List[ObjectsSchema] = postprocess(result, top, left, ratio)
 
-    print(response)
+    response: ResponseSchema = ResponseSchema(id=id_, width=width, height=height, objects=objects)
+
+    
     return response

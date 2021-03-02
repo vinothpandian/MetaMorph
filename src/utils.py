@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from fastapi import UploadFile
 
-from src.models import PredictionResponse
+from src.models import ObjectsSchema
 
 
 def preprocess(image: np.ndarray):
@@ -36,7 +36,7 @@ def preprocess(image: np.ndarray):
     return image_np, top, left, ratio
 
 
-def postprocess(result: List[PredictionResponse], top: int, left: int, ratio: float):
+def postprocess(result: List[ObjectsSchema], top: int, left: int, ratio: float):
 
     for annotation in result:
         xmin = annotation["position"]["y"] - left
@@ -61,13 +61,13 @@ def postprocess(result: List[PredictionResponse], top: int, left: int, ratio: fl
 
 
 def store_sketch(image: UploadFile):
-    filename = uuid1()
-    image_path = f"./sketches/{filename}.jpg"
+    id_ = str(uuid1())
+    image_path = f"./sketches/{id_}.jpg"
 
     with open(image_path, "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
 
-    return image_path
+    return id_, image_path
 
 
 # Utility function copied from TensorFlow Object Detection API
