@@ -1,7 +1,7 @@
 <h1 align="center">MetaMorph: AI Assistance to Transform Lo-Fi Sketches to Higher Fidelities</h1>
 <p align="center">
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
-  <a href="https://api.metamorph.designwitheve.com/docs/" target="_blank">
+  <a href="https://api.metamorph.blackbox-toolkit.vinoth.info/docs/" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
   <a href="#" target="_blank">
@@ -20,12 +20,12 @@
   <br/>
   <br/>
   <span>🏠 </span>
-  <a href="https://metamorph.designwitheve.com" target="_blank">
+  <a href="https://metamorph.blackbox-toolkit.vinoth.info" target="_blank">
     Homepage
   </a>
   <span>&nbsp;&nbsp;&nbsp;</span>
   <span>✨ </span>
-  <a href="https://metamorph.designwitheve.com/try-it-out" target="_blank">
+  <a href="https://metamorph.blackbox-toolkit.vinoth.info/try-it-out" target="_blank">
     Demo
   </a>
   <br/>
@@ -52,8 +52,8 @@ To install and use MetaMorph API, follow the steps below
 
 - Download the following files to the `models/` directory
 
-  - [frozen_inference_graph.pb](https://designwitheve.com/f/frozen_inference_graph.pb)
-  - [labels.json](https://designwitheve.com/f/labels.json)
+  - [frozen_inference_graph.pb](https://designwitheve.sarahsuleri.info/f/frozen_inference_graph.pb)
+  - [labels.json](https://designwitheve.sarahsuleri.info/f/labels.json)
 
 - Install poetry
 
